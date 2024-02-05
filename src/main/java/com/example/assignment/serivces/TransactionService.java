@@ -18,9 +18,9 @@ import java.util.Map;
 @Service
 public class TransactionService {
 
-    @Autowired
+    
     private TransactionRepository transactionRepository;
-    @Autowired
+    
     private UserRepository userRepository;
 
     @Autowired
