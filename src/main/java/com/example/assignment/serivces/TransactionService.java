@@ -11,6 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class TransactionService {
 
@@ -18,6 +22,17 @@ public class TransactionService {
     private TransactionRepository transactionRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    public void setTransactionRepository(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public int processTransaction(TransactionDTO transactionDTO) {
         double amountSpent = transactionDTO.getAmount();
 
@@ -37,10 +52,18 @@ public class TransactionService {
 
         userRepository.save(user);
 
-
         return calculatedPoints;
     }
 
+    public Map<Long, Integer> processTransactions(List<TransactionDTO> transactionDTOS){
+        Map<Long, Integer> results = new HashMap<>();
+        for (TransactionDTO transactionDTO : transactionDTOS) {
+            int currentPoints = results.getOrDefault(transactionDTO.getUserID(), 0);
+            currentPoints += processTransaction(transactionDTO);
+            results.put(transactionDTO.getUserID(), currentPoints);
+        }
+        return results;
+    }
     public int calculatePoints(double amountSpent) {
         int points = 0;
         int over100 = (int) Math.floor(amountSpent - 100);
