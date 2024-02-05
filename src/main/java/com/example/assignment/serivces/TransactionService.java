@@ -56,6 +56,9 @@ public class TransactionService {
     }
 
     public Map<Long, Integer> processTransactions(List<TransactionDTO> transactionDTOS){
+		//here I would have refactor it a bit so that we are not calling the getUser everytime we process the transaction
+		//given we have 1000 transactions for 1 user we would be fetching it 1000 times
+		//I would probably throw a set or list here and pass it to the processTransaction
         Map<Long, Integer> results = new HashMap<>();
         for (TransactionDTO transactionDTO : transactionDTOS) {
             int currentPoints = results.getOrDefault(transactionDTO.getUserID(), 0);
